@@ -8,7 +8,6 @@ async function bootstrap() {
 
   const configSrv = app.get(ConfigService);
   const port = configSrv.get('api.port');
-  console.log(port);
 
   // SWAGGER
   setupSwagger(app);
