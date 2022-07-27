@@ -4,6 +4,7 @@ import apiConfig from '../config/api.config';
 import swaggerConfig from '../config/swagger.config';
 
 import { UserModule } from './user/user.module';
+import { PetsModule } from './pets/pets.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { UserModule } from './user/user.module';
       load: [apiConfig, swaggerConfig],
     }),
     UserModule,
+    PetsModule,
   ],
   controllers: [],
   providers: [],

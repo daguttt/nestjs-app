@@ -12,7 +12,7 @@ export function setupSwagger(app: INestApplication): void {
     .setTitle(title)
     .setDescription(description)
     .setVersion(version)
-    .addTag('Endpoints')
+    .addTag('pets')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config, {
