@@ -4,7 +4,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Pet } from './entities/pet.entity';
 import { PetDto } from './dto/pet.dto';
-import { PetCategories, PetCategory } from './entities/pet-categories.entity';
+import { PetCategories } from './entities/pet-categories.entity';
 import fetch from 'node-fetch';
 
 @Injectable()
