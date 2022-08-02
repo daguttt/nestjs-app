@@ -1,10 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 import { AxiosResponse } from 'axios';
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { forkJoin, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Pet } from './entities/pet.entity';
 import { PetDto } from './dto/pet.dto';
-import { PetCategories } from './entities/pet-categories.entity';
+import { PetCategories, PetCategory } from './entities/pet-categories.entity';
+import fetch from 'node-fetch';
 
 @Injectable()
 export class PetsService implements OnModuleInit {
@@ -14,16 +15,26 @@ export class PetsService implements OnModuleInit {
   }
   constructor(private readonly httpService: HttpService) {}
   onModuleInit() {
-    forkJoin([this.fetchPets(), this.fetchPetCategories()]).subscribe((res) => {
-      const pets = res[0].data;
-      const petCategories = res[1].data.categories;
+    Promise.allSettled([
+      fetch('https://bsl1.herokuapp.com/pet').then((res) => res.json()),
+      fetch('https://bsl1.herokuapp.com/pet/categories').then((res) =>
+        res.json(),
+      ),
+    ]).then((responses) => {
+      const castedResponses = responses.filter(
+        (res) => res.status === 'fulfilled',
+      ) as PromiseFulfilledResult<Pet[] | PetCategories>[];
+
+      const pets = castedResponses[0].value as Pet[];
+      const petCategories = castedResponses[1].value as PetCategories;
+
       this._pets = pets.map((pet) => {
-        const matchedCategory = petCategories.find(
+        const { name: nameMatchedCategory } = petCategories.categories.find(
           (category) => pet.category === category.id,
-        )?.name;
+        );
         return {
           ...pet,
-          category: matchedCategory,
+          category: nameMatchedCategory,
         };
       });
     });
